@@ -7,6 +7,10 @@ android {
     namespace = "com.example.edu_tinkoff_homework_1"
     compileSdk = 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.example.edu_tinkoff_homework_1"
         minSdk = 24
