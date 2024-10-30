@@ -2,9 +2,11 @@ package com.example.edu_tinkoff_homework_1.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edu_tinkoff_homework_1.data.Joke
 import com.example.edu_tinkoff_homework_1.databinding.JokeItemBinding
+import com.example.edu_tinkoff_homework_1.recycler.util.JokeDiffUtilCallback
 
 class JokeAdapter(
     private var data: List<Joke> = emptyList()
@@ -24,7 +26,9 @@ class JokeAdapter(
     }
 
     fun updateList(newData: List<Joke>){
+        val diffUtilCallback = JokeDiffUtilCallback(data, newData)
+        val calculatedDiff = DiffUtil.calculateDiff(diffUtilCallback)
         data = newData
-        notifyDataSetChanged()
+        calculatedDiff.dispatchUpdatesTo(this)
     }
 }
