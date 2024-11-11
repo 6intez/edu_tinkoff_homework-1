@@ -14,11 +14,13 @@ import com.example.edu_tinkoff_homework_1.data.Joke
 import com.example.edu_tinkoff_homework_1.databinding.ActivityJokeDetailsBinding
 import com.example.edu_tinkoff_homework_1.databinding.ActivityJokeListBinding
 
-class JokeDetailsActivity : AppCompatActivity() {
+class JokeDetailsActivity : AppCompatActivity(), JokeDetailsView {
 
     private var jokePosition: Int = -1
 
     private lateinit var binding: ActivityJokeDetailsBinding
+
+    private lateinit var presenter: JokeDetailsPresenter
     companion object {
         private const val JOKE_POSITION_EXTRA = "JOKE_POSITION"
 
@@ -33,38 +35,29 @@ class JokeDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityJokeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        presenter = JokeDetailsPresenter(this)
         handleExtra()
     }
 
-    private fun handleError() {
-        Toast.makeText(this, "Invalid joke data ", Toast.LENGTH_SHORT).show()
-        finish()
-    }
+
 
     private fun handleExtra(){
         jokePosition = intent.getIntExtra(JOKE_POSITION_EXTRA, -1)
-
-        if (jokePosition == -1) {
-            handleError()
-        } else {
-            val item = JokeListActivity.jokes[jokePosition] as? Joke
-
-            if (item != null) {
-                setupJokeData(item)
-            } else {
-                handleError()
-            }
-        }
+        presenter.loadJokeDetails(jokePosition)
     }
 
-    private fun setupJokeData(joke: Joke){
+
+
+    override fun showJokeInfo(joke: Joke) {
         with(binding) {
             jokeCategory.text = "Категория: ${joke.category}"
             jokeQuestion.text = "Вопрос: ${joke.question}"
             jokeAnswer.text = "Ответ:  ${joke.answer}"
         }
-
     }
 
-
+    override fun showErrorAndCloseScreen(errorMessage: String) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        finish()
+    }
 }
