@@ -1,7 +1,10 @@
 package com.example.edu_tinkoff_homework_1.recycler
 
+import android.content.Context
+import android.content.DialogInterface.OnClickListener
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.edu_tinkoff_homework_1.data.Joke
@@ -9,14 +12,18 @@ import com.example.edu_tinkoff_homework_1.databinding.JokeItemBinding
 import com.example.edu_tinkoff_homework_1.recycler.util.JokeDiffUtilCallback
 
 class JokeAdapter(
-    private var data: List<Joke> = emptyList()
+    private var data: List<Joke> = emptyList(),
+    private val clickListener: (Int) -> Unit,
 ): RecyclerView.Adapter<JokeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = JokeItemBinding.inflate(inflater)
-
-        return JokeViewHolder(binding)
+        return JokeViewHolder(binding).apply {
+            binding.root.setOnClickListener {
+                handleJokeClick(adapterPosition)
+            }
+        }
     }
 
     override fun getItemCount() = data.size
@@ -30,5 +37,14 @@ class JokeAdapter(
         val calculatedDiff = DiffUtil.calculateDiff(diffUtilCallback)
         data = newData
         calculatedDiff.dispatchUpdatesTo(this)
+    }
+
+    private fun handleJokeClick(position: Int){
+        if (position != RecyclerView.NO_POSITION) {
+            val item = data[position]
+            clickListener(position)
+           // Toast.makeText(context, "Clicked on ${item.question}", Toast.LENGTH_SHORT).show( )
+        }
+
     }
 }
