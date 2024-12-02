@@ -5,12 +5,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.edu_tinkoff_homework_1.JokeListViewModel
 import com.example.edu_tinkoff_homework_1.JokeViewModelFactory
 import com.example.edu_tinkoff_homework_1.R
 import com.example.edu_tinkoff_homework_1.databinding.FragmentJokeListBinding
 import com.example.edu_tinkoff_homework_1.recycler.JokeAdapter
+import kotlinx.coroutines.launch
 
 class JokeListFragment : Fragment(R.layout.fragment_joke_list) {
 
@@ -25,9 +27,18 @@ class JokeListFragment : Fragment(R.layout.fragment_joke_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentJokeListBinding.bind(view)
+
         createRecyclerViewList()
+
         initViewModel()
+
+        observeViewModel()
+
+        binding.addJokeButton.setOnClickListener {
+            AddJokeDialogFragment(viewModel).show(parentFragmentManager, "AddJokeDialog")
+        }
     }
 
     private fun createRecyclerViewList() {
@@ -37,14 +48,24 @@ class JokeListFragment : Fragment(R.layout.fragment_joke_list) {
 
     private fun initViewModel() {
         val factory = JokeViewModelFactory()
-        viewModel = ViewModelProvider(this, factory)[JokeListViewModel::class.java]
-        viewModel.jokes.observe(viewLifecycleOwner) { jokesList ->
-            adapter.updateList(jokesList)
+        viewModel = ViewModelProvider(requireActivity(), factory)[JokeListViewModel::class.java]
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.jokes.observe(viewLifecycleOwner) { jokes ->
+                adapter.updateList(jokes)
+
+                if (jokes.isEmpty()) {
+                    binding.emptyText.visibility = View.VISIBLE
+                } else {
+                    binding.emptyText.visibility = View.GONE
+                }
+            }
         }
-        viewModel.error.observe(viewLifecycleOwner) { showError(it) }
     }
 
     private fun showError(errorMessage: String?) {
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), errorMessage ?: "Ошибка загрузки данных", Toast.LENGTH_SHORT).show()
     }
 }

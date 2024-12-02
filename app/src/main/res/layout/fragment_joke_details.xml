@@ -16,7 +16,8 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Категория"/>
 
     <TextView
         android:id="@+id/jokeQuestion"
@@ -27,7 +28,8 @@
         app:layout_constraintTop_toBottomOf="@id/jokeCategory"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:text="Вопрос"/>
     <TextView
         android:id="@+id/jokeAnswer"
         android:layout_width="0dp"
@@ -38,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/jokeQuestion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:text="Ответ"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
