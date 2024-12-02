@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.edu_tinkoff_homework_1.JokeListViewModel
 import com.example.edu_tinkoff_homework_1.JokeViewModelFactory
 import com.example.edu_tinkoff_homework_1.R
@@ -43,7 +44,17 @@ class JokeListFragment : Fragment(R.layout.fragment_joke_list) {
 
     private fun createRecyclerViewList() {
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+        val layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.recyclerView.layoutManager = layoutManager
+
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (layoutManager.findLastVisibleItemPosition() == adapter.itemCount - 1) {
+                    viewModel.loadJokesFromApi()
+                }
+            }
+        })
     }
 
     private fun initViewModel() {
@@ -61,6 +72,10 @@ class JokeListFragment : Fragment(R.layout.fragment_joke_list) {
                 } else {
                     binding.emptyText.visibility = View.GONE
                 }
+            }
+
+            viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
         }
     }

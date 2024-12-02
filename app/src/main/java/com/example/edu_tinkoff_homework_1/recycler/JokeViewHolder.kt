@@ -12,5 +12,6 @@ class JokeViewHolder(
         binding.jokeCategory.text = joke.category
         binding.jokeQuestion.text = joke.question
         binding.jokeAnswer.text = joke.answer
+        binding.jokeSource.text = joke.source
     }
 }

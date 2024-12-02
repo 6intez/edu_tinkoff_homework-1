@@ -32,11 +32,12 @@ class AddJokeDialogFragment(private val viewModel: JokeListViewModel) : DialogFr
             val category = binding.inputCategory.text.toString()
             val question = binding.inputQuestion.text.toString()
             val answer = binding.inputAnswer.text.toString()
+            val source = "Local"
 
             if (category.isBlank() || question.isBlank() || answer.isBlank()) {
                 Toast.makeText(requireContext(), "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show()
             } else {
-                val newJoke = Joke(Random.nextInt(), category, question, answer)
+                val newJoke = Joke(Random.nextInt(), category, question, answer,source)
                 lifecycleScope.launch {
                     viewModel.addJoke(newJoke)
                     dismiss()
